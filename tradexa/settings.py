@@ -82,17 +82,20 @@ WSGI_APPLICATION = "tradexa.wsgi.application"
 
 
 # Database
-# Uses Supabase (PostgreSQL) via dj-database-url when DATABASE_URL is set,
-# otherwise falls back to a local SQLite database for quick local testing.
+# Uses PostgreSQL via dj-database-url when DATABASE_URL is set, otherwise
+# falls back to a local SQLite database for quick local testing.
+# SSL is only required for remote hosts (e.g. Supabase); local Postgres
+# connections leave it off so they don't fail on "server does not support SSL".
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
+    is_local_db = any(host in DATABASE_URL for host in ("localhost", "127.0.0.1"))
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
             conn_max_age=600,
-            ssl_require=True,
+            ssl_require=not is_local_db,
         )
     }
 else:

@@ -7,8 +7,9 @@ by volume (with an 80% packing-efficiency factor) and weight.
 ## Tech stack
 
 - **Backend:** Django 4.2 + Django REST Framework
-- **Database:** Supabase (PostgreSQL) via `dj-database-url` (falls back to
-  SQLite locally when `DATABASE_URL` is unset)
+- **Database:** PostgreSQL via `dj-database-url` (falls back to SQLite locally
+  when `DATABASE_URL` is unset). SSL is required for remote hosts and disabled
+  automatically for `localhost`/`127.0.0.1`.
 - **Auth:** Supabase Auth (JWT) validated with `djangorestframework-simplejwt`
   (endpoints currently use `AllowAny` so they can be tested without auth)
 - **Frontend:** Vanilla JS + HTML/CSS served through a Django template, styled
@@ -54,10 +55,25 @@ tradexa/
    cp .env.example .env
    ```
 
-   Edit `.env` and set at least `SECRET_KEY`. Leave `DATABASE_URL` unset to use
-   a local SQLite database, or set it to connect to Supabase (see below).
+   Edit `.env` and set `SECRET_KEY` and `DATABASE_URL` for your local Postgres
+   (see below). Leave `DATABASE_URL` unset to fall back to a local SQLite
+   database instead.
 
-4. **Migrate and seed**
+4. **Create the local PostgreSQL database** (skip if using SQLite)
+
+   With PostgreSQL installed and running, create the `tradexa` database:
+
+   ```bash
+   psql -U postgres -c "CREATE DATABASE tradexa;"
+   ```
+
+   Then set the matching URL in `.env`:
+
+   ```
+   DATABASE_URL=postgresql://postgres:your-password@localhost:5432/tradexa
+   ```
+
+5. **Migrate and seed**
 
    ```bash
    python manage.py migrate
@@ -67,13 +83,13 @@ tradexa/
    `seed_tradexa` clears existing products/boxes and loads 8 products and 4
    boxes from `seed_data/`.
 
-5. **(Optional) create an admin user**
+6. **(Optional) create an admin user**
 
    ```bash
    python manage.py createsuperuser
    ```
 
-6. **Run the server**
+7. **Run the server**
 
    ```bash
    python manage.py runserver
@@ -82,32 +98,17 @@ tradexa/
    - Dashboard: <http://127.0.0.1:8000/>
    - Django admin: <http://127.0.0.1:8000/admin/>
 
-## Connecting Supabase
+## Using a remote PostgreSQL (e.g. Supabase)
 
-1. In your Supabase project go to **Project Settings → Database** and copy the
-   connection string (URI). It looks like:
+Point `DATABASE_URL` at the remote connection string — SSL is enabled
+automatically for any non-`localhost` host:
 
-   ```
-   postgresql://postgres:[YOUR-PASSWORD]@db.<project-ref>.supabase.co:5432/postgres
-   ```
+```
+DATABASE_URL=postgresql://postgres:your-password@db.your-ref.supabase.co:5432/postgres
+```
 
-2. Put it in `.env` as `DATABASE_URL` and also set `SUPABASE_URL` /
-   `SUPABASE_ANON_KEY` (from **Project Settings → API**):
-
-   ```
-   DATABASE_URL=postgresql://postgres:your-password@db.your-ref.supabase.co:5432/postgres
-   SUPABASE_URL=https://your-ref.supabase.co
-   SUPABASE_ANON_KEY=your-anon-key
-   ```
-
-   SSL is required and is enabled automatically when `DATABASE_URL` is present.
-
-3. Re-run migrations and seeding against Supabase:
-
-   ```bash
-   python manage.py migrate
-   python manage.py seed_tradexa
-   ```
+If your password contains URL-special characters (`@ : / # ? %`), URL-encode
+them (e.g. `@` → `%40`). Then re-run `migrate` and `seed_tradexa`.
 
 ## API reference
 
