@@ -1,3 +1,6 @@
+from collections import OrderedDict
+
+from django.db import transaction
 from rest_framework import serializers
 
 from inventory.models import Product
@@ -72,17 +75,25 @@ class OrderCreateSerializer(serializers.Serializer):
             )
         return value
 
+    @transaction.atomic
     def create(self, validated_data):
         from .services.box_selector import recommend_box
 
-        order = Order.objects.create()
-
+        # Merge repeated product_ids into a single line with summed quantity so
+        # the same product can't appear twice in one order.
+        merged = OrderedDict()
         for item in validated_data["items"]:
-            OrderItem.objects.create(
-                order=order,
-                product_id=item["product_id"],
-                quantity=item["quantity"],
+            merged[item["product_id"]] = (
+                merged.get(item["product_id"], 0) + item["quantity"]
             )
+
+        order = Order.objects.create()
+        OrderItem.objects.bulk_create(
+            [
+                OrderItem(order=order, product_id=product_id, quantity=quantity)
+                for product_id, quantity in merged.items()
+            ]
+        )
 
         box, reason, totals = recommend_box(order)
         BoxRecommendation.objects.create(

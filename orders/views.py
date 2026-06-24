@@ -11,7 +11,7 @@ from .serializers import (
     OrderItemInputSerializer,
     OrderSerializer,
 )
-from .services.box_selector import recommend_box
+from .services.box_selector import order_fits_box, recommend_box
 
 
 def _serialize_recommendation(box, reason, totals, request):
@@ -100,16 +100,15 @@ class RecommendPreviewView(APIView):
         box, reason, totals = recommend_box(pairs)
         payload = _serialize_recommendation(box, reason, totals, request)
 
-        # Annotate every active box with a fits flag for the UI.
-        effective_volume = totals["effective_volume_cm3"]
-        total_weight = totals["total_weight_kg"]
+        # Annotate every active box with a fits flag for the UI, using the same
+        # volume + weight + dimensional logic as the recommendation itself.
+        products = [product for product, _ in pairs]
         boxes = []
         for candidate in Box.objects.filter(is_active=True):
             box_data = BoxSerializer(candidate, context={"request": request}).data
             box_data["fits"] = (
-                candidate.volume_cm3 >= effective_volume
-                and candidate.max_weight_kg >= total_weight
-                and totals["item_count"] > 0
+                totals["item_count"] > 0
+                and order_fits_box(candidate, products, totals)
             )
             box_data["is_recommended"] = bool(box and candidate.id == box.id)
             boxes.append(box_data)

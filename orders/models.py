@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Max
 
 from inventory.models import Box, Product
 
@@ -29,11 +28,18 @@ class Order(models.Model):
         return self.reference or f"Order #{self.pk}"
 
     def save(self, *args, **kwargs):
-        """Auto-generate a sequential reference like ORD-00123."""
-        if not self.reference:
-            last_id = Order.objects.aggregate(max_id=Max("id"))["max_id"] or 0
-            self.reference = f"ORD-{last_id + 1:05d}"
+        """Auto-generate a reference like ORD-00123 from the primary key.
+
+        Deriving the reference from the database-assigned ``pk`` (rather than
+        ``Max(id) + 1``) means concurrent inserts each get a unique value from
+        the underlying sequence, so two simultaneous orders can never collide
+        on the unique ``reference`` constraint.
+        """
+        needs_reference = not self.reference and self._state.adding
         super().save(*args, **kwargs)
+        if needs_reference:
+            self.reference = f"ORD-{self.pk:05d}"
+            super().save(update_fields=["reference"])
 
 
 class OrderItem(models.Model):

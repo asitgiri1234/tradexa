@@ -15,7 +15,7 @@ def calculate_totals(order):
     Returns a dict with ``total_volume_cm3``, ``total_weight_kg``,
     ``effective_volume_cm3`` and ``item_count``.
     """
-    pairs = _as_pairs(order)
+    pairs = get_line_items(order)
 
     total_volume_cm3 = 0.0
     total_weight_kg = 0.0
@@ -37,8 +37,12 @@ def calculate_totals(order):
     }
 
 
-def _as_pairs(order):
-    """Normalise the input into a list of ``(product, quantity)`` tuples."""
+def get_line_items(order):
+    """Normalise the input into a list of ``(product, quantity)`` tuples.
+
+    Accepts an ``Order`` instance (reads its related ``items``) or an iterable
+    of ``(product, quantity)`` pairs, so callers can share one representation.
+    """
     items = getattr(order, "items", None)
     if items is not None and hasattr(items, "all"):
         return [(item.product, item.quantity) for item in items.select_related("product").all()]

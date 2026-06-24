@@ -146,7 +146,15 @@ boxes that are too small.
 - `orders/services/packing_calculator.py` — sums item volume and weight and
   divides volume by the **0.8 packing-efficiency factor** to get an effective
   volume.
-- `orders/services/box_selector.py` — keeps active boxes whose internal volume
-  ≥ effective volume and whose weight limit ≥ total weight, then returns the
-  **cheapest** one. If none fit it returns
+- `orders/services/box_selector.py` — keeps active boxes that satisfy **all**
+  of: internal volume ≥ effective volume, weight limit ≥ total weight, and
+  every item physically fits the box by **dimension** (each item's sorted
+  dimensions ≤ the box's sorted dimensions, which allows any rotation). It then
+  returns the **cheapest** qualifying box. If none qualify it returns
   `"No suitable box — consider splitting the order"`.
+
+  The dimensional check prevents recommending a box an item cannot physically
+  fit into — e.g. a 44 cm keyboard is never put in a 30 cm box even though the
+  volume alone would allow it. Note this is still a heuristic, not a full 3D
+  bin-packing solver: multiple items are combined by total volume rather than
+  simulating how they actually pack together.
