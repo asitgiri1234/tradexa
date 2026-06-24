@@ -49,10 +49,17 @@ tradexa/
    pip install -r requirements.txt
    ```
 
-3. **Configure environment**
+3. **Configure environment** (only creates `.env` if it doesn't already exist —
+   so it never overwrites your real credentials)
 
    ```bash
-   cp .env.example .env
+   # PowerShell
+   if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+   ```
+
+   ```bash
+   # bash / macOS / Linux
+   [ -f .env ] || cp .env.example .env
    ```
 
    Edit `.env` and set `SECRET_KEY` and `DATABASE_URL` for your local Postgres
