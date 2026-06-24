@@ -1,0 +1,66 @@
+[
+  {
+    "name": "Wireless Bluetooth Headphones",
+    "sku": "ELC-HP-001",
+    "length_cm": 20.0,
+    "width_cm": 18.0,
+    "height_cm": 8.0,
+    "weight_kg": 0.35
+  },
+  {
+    "name": "USB-C Charging Cable 2m",
+    "sku": "ACC-CB-002",
+    "length_cm": 12.0,
+    "width_cm": 8.0,
+    "height_cm": 2.5,
+    "weight_kg": 0.08
+  },
+  {
+    "name": "Mechanical Keyboard",
+    "sku": "ELC-KB-003",
+    "length_cm": 44.0,
+    "width_cm": 14.0,
+    "height_cm": 4.0,
+    "weight_kg": 1.1
+  },
+  {
+    "name": "Wireless Mouse",
+    "sku": "ACC-MS-004",
+    "length_cm": 12.0,
+    "width_cm": 7.0,
+    "height_cm": 4.0,
+    "weight_kg": 0.12
+  },
+  {
+    "name": "27-inch 4K Monitor",
+    "sku": "ELC-MN-005",
+    "length_cm": 64.0,
+    "width_cm": 42.0,
+    "height_cm": 12.0,
+    "weight_kg": 5.8
+  },
+  {
+    "name": "Smartphone Stand Aluminium",
+    "sku": "ACC-ST-006",
+    "length_cm": 11.0,
+    "width_cm": 8.0,
+    "height_cm": 3.0,
+    "weight_kg": 0.18
+  },
+  {
+    "name": "Portable SSD 1TB",
+    "sku": "ELC-SSD-007",
+    "length_cm": 10.0,
+    "width_cm": 5.5,
+    "height_cm": 1.0,
+    "weight_kg": 0.06
+  },
+  {
+    "name": "Laptop Sleeve 15-inch",
+    "sku": "ACC-SL-008",
+    "length_cm": 38.0,
+    "width_cm": 27.0,
+    "height_cm": 2.0,
+    "weight_kg": 0.25
+  }
+]
