@@ -37,7 +37,7 @@ sequence, with notes on the `.env` placeholder caveat.
 real DB URL.
 
 ### 4. Switch to local PostgreSQL
-**User:** Remove Supabase, connect to local Postgres with password `REDACTED`,
+**User:** Remove Supabase, connect to local Postgres with a local DB password,
 update and push.
 
 **Claude:** Made SSL conditional in settings (off for `localhost`), pointed
@@ -81,8 +81,7 @@ duplicate-product handling, `AllowAny`/auth, prod config, and the IPv6-only
 Supabase operational risk.
 
 ### 10. Fix the edge cases + push
-**User:** Fix them; use local Postgres (`postgres`/`REDACTED`) for the
-operational problem; push.
+**User:** Fix them; use local Postgres for the operational problem; push.
 
 **Claude:** Implemented a dimensional fit check (with rotation), made order
 references collision-safe by deriving them from the DB primary key, merged
