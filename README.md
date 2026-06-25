@@ -4,6 +4,9 @@ A Django-based warehouse **shipping-box recommendation system**. Add products
 to a cart and Tradexa recommends the cheapest shipping box that fits the order
 by volume (with an 80% packing-efficiency factor) and weight.
 
+> **Build log:** This project was built and iterated on with Claude — full
+> conversation: <https://claude.ai/share/4d85fb7b-0fb4-44ea-a37d-fb4f823ec692>
+
 ## Tech stack
 
 - **Backend:** Django 4.2 + Django REST Framework
