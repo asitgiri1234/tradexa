@@ -6,6 +6,12 @@ by volume (with an 80% packing-efficiency factor) and weight.
 
 > **Build log:** This project was built and iterated on with Claude — full
 > conversation: <https://claude.ai/share/4d85fb7b-0fb4-44ea-a37d-fb4f823ec692>
+> (turn-by-turn summary in [CHAT_TRANSCRIPT.md](CHAT_TRANSCRIPT.md)).
+>
+> **Tests:** 26 tests in [`inventory/tests.py`](inventory/tests.py) and
+> [`orders/tests.py`](orders/tests.py); run with `python manage.py test`. Latest
+> run output in [TEST_OUTPUT.md](TEST_OUTPUT.md); CI config in
+> [`.github/workflows/tests.yml`](.github/workflows/tests.yml).
 
 ## Tech stack
 
